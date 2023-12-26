@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta id="viewport" name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <title>Probe</title>
+</head>
+<body>
+<ol>
+    <li id="user_agent">user_agent:</li>
+    <li id="url_path">pathname:</li>
+    <li id="url_search">search:</li>
+    <li id="url_hash">hash:</li>
+    <li id="cookies">cookies:</li>
+    <li id="methods_diff">methods(diff):</li>
+    <li id="methods_unknown">methods(unkonwn):</li>
+</ol>
+<script type="text/javascript">
+    (function () {
+        if (top.location != location) {
+            top.postMessage(Object.keys(window), '*')
+            return;
+        }
+        document.querySelector("#user_agent").append(navigator.userAgent);
+        document.querySelector("#url_path").append(location.pathname);
+        document.querySelector("#url_search").append(location.search);
+        document.querySelector("#url_hash").append(location.hash);
+        document.querySelector("#cookies").append(document.cookie);
+        const known = ["0", "window", "self", "document", "name", "location", "customElements", "history", "locationbar", "menubar", "personalbar", "scrollbars", "statusbar", "toolbar", "status", "closed", "frames", "length", "top", "opener", "parent", "frameElement", "navigator", "origin", "external", "screen", "innerWidth", "innerHeight", "scrollX", "pageXOffset", "scrollY", "pageYOffset", "visualViewport", "screenX", "screenY", "outerWidth", "outerHeight", "devicePixelRatio", "clientInformation", "screenLeft", "screenTop", "defaultStatus", "defaultstatus", "styleMedia", "onsearch", "isSecureContext", "performance", "onappinstalled", "onbeforeinstallprompt", "crypto", "indexedDB", "webkitStorageInfo", "sessionStorage", "localStorage", "onbeforexrselect", "onabort", "onblur", "oncancel", "oncanplay", "oncanplaythrough", "onchange", "onclick", "onclose", "oncontextmenu", "oncuechange", "ondblclick", "ondrag", "ondragend", "ondragenter", "ondragleave", "ondragover", "ondragstart", "ondrop", "ondurationchange", "onemptied", "onended", "onerror", "onfocus", "onformdata", "oninput", "oninvalid", "onkeydown", "onkeypress", "onkeyup", "onload", "onloadeddata", "onloadedmetadata", "onloadstart", "onmousedown", "onmouseenter", "onmouseleave", "onmousemove", "onmouseout", "onmouseover", "onmouseup", "onmousewheel", "onpause", "onplay", "onplaying", "onprogress", "onratechange", "onreset", "onresize", "onscroll", "onsecuritypolicyviolation", "onseeked", "onseeking", "onselect", "onslotchange", "onstalled", "onsubmit", "onsuspend", "ontimeupdate", "ontoggle", "onvolumechange", "onwaiting", "onwebkitanimationend", "onwebkitanimationiteration", "onwebkitanimationstart", "onwebkittransitionend", "onwheel", "onauxclick", "ongotpointercapture", "onlostpointercapture", "onpointerdown", "onpointermove", "onpointerup", "onpointercancel", "onpointerover", "onpointerout", "onpointerenter", "onpointerleave", "onselectstart", "onselectionchange", "onanimationend", "onanimationiteration", "onanimationstart", "ontransitionrun", "ontransitionstart", "ontransitionend", "ontransitioncancel", "onafterprint", "onbeforeprint", "onbeforeunload", "onhashchange", "onlanguagechange", "onmessage", "onmessageerror", "onoffline", "ononline", "onpagehide", "onpageshow", "onpopstate", "onrejectionhandled", "onstorage", "onunhandledrejection", "onunload", "alert", "atob", "blur", "btoa", "cancelAnimationFrame", "cancelIdleCallback", "captureEvents", "clearInterval", "clearTimeout", "close", "confirm", "createImageBitmap", "fetch", "find", "focus", "getComputedStyle", "getSelection", "matchMedia", "moveBy", "moveTo", "open", "postMessage", "print", "prompt", "queueMicrotask", "releaseEvents", "reportError", "requestAnimationFrame", "requestIdleCallback", "resizeBy", "resizeTo", "scroll", "scrollBy", "scrollTo", "setInterval", "setTimeout", "stop", "structuredClone", "webkitCancelAnimationFrame", "webkitRequestAnimationFrame", "chrome", "originAgentCluster", "trustedTypes", "speechSynthesis", "onpointerrawupdate", "crossOriginIsolated", "scheduler", "openDatabase", "webkitRequestFileSystem", "webkitResolveLocalFileSystemURL", "__catcherThrottle", "__logPostMessage", "__closeLogPostMessage", "__openLogPostMessage", "__catcherCreateIframeObserver", "VConsole", "_vcOrigConsole", "arr", "applicationCache", "event", "offscreenBuffering", "onanimationcancel", "orientation", "onorientationchange", "webkitIndexedDB", "webkitCancelRequestAnimationFrame", "showModalDialog", "getMatchedCSSRules", "webkitConvertPointFromPageToNode", "webkitConvertPointFromNodeToPage", "browser", "getDefaultComputedStyle", "scrollByLines", "scrollByPages", "sizeToContent", "updateCommands", "dump", "setResizable", "mozInnerScreenX", "mozInnerScreenY", "scrollMaxX", "scrollMaxY", "fullScreen", "ondevicemotion", "ondeviceorientation", "onabsolutedeviceorientation", "InstallTrigger", "sidebar", "onbeforeinput", "ondragexit", "onloadend", "onmozfullscreenchange", "onmozfullscreenerror", "ongamepadconnected", "ongamepaddisconnected", "caches", "navigation", "onbeforetoggle", "oncontextlost", "oncontextrestored", "fence", "cookieStore", "ondeviceorientationabsolute", "launchQueue", "sharedStorage", "documentPictureInPicture", "onbeforematch", "getScreenDetails", "queryLocalFonts", "showDirectoryPicker", "showOpenFilePicker", "showSaveFilePicker", "credentialless", "oncontentvisibilityautostatechange", "onscrollend"]
+        let diff = [];
+        let unknown = [];
+        window.addEventListener('message', function (event) {
+            if (window[0] !== event.source) {
+                return
+            }
+            var iframeKeys = event.data;
+            Object.keys(window).forEach(function (key) {
+                if (iframeKeys.indexOf(key) < 0 && key != 0) {
+                    diff.push(key);
+                }
+                if (known.indexOf(key) < 0 && iframeKeys.indexOf(key) >= 0) {
+                    unknown.push(key);
+                }
+            });
+            document.querySelector("#methods_diff").append(diff);
+            document.querySelector("#methods_unknown").append(unknown);
+        }, false);
+        var iframe = document.createElement('iframe');
+        iframe.src = location.href + "#inframe";
+        iframe.style = "display: none;"
+        document.body.appendChild(iframe);
+        document.querySelector("iframe").contentWindow.postMessage("message", "*");
+        var script = document.createElement('script');
+        script.src = "https://unpkg.com/vconsole@latest/dist/vconsole.min.js";
+        document.body.appendChild(script);
+        script.onload = function () {
+            var vConsole = new window.VConsole();
+            diff.forEach(function (elem) {
+                console.log("[>>>>>>>>>" + elem + "<<<<<<<<<]");
+                console.log(window[elem]);
+                console.log("[-------end-------]");
+            })
+            unknown.forEach(function (elem) {
+                console.log("[>>>>>>>>>" + elem + "<<<<<<<<<]");
+                console.log(window[elem]);
+                console.log("[-------end-------]");
+            })
+            console.log("[>>>>>>>>>" + window + "<<<<<<<<<]");
+            console.log(window);
+            console.log("[-------end-------]");
+        }
+    })();
+</script>
+</body>
+</html>
