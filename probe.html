@@ -35,16 +35,24 @@
                 return
             }
             var iframeKeys = event.data;
-            Object.keys(window).forEach(function (key) {
+            var ul_diff = document.createElement('ul');
+            var ul_unknown = document.createElement('ul');
+            for (let key in window) {
                 if (iframeKeys.indexOf(key) < 0 && key != 0) {
                     diff.push(key);
+                    var li = document.createElement('li');
+                    li.innerHTML = key
+                    ul_diff.appendChild(li)
                 }
                 if (known.indexOf(key) < 0 && iframeKeys.indexOf(key) >= 0) {
                     unknown.push(key);
+                    var li = document.createElement('li');
+                    li.innerHTML = key
+                    ul_unknown.appendChild(li)
                 }
-            });
-            document.querySelector("#methods_diff").append(diff);
-            document.querySelector("#methods_unknown").append(unknown);
+            }
+            document.querySelector("#methods_diff").appendChild(ul_diff);
+            document.querySelector("#methods_unknown").appendChild(ul_unknown);
         }, false);
         var iframe = document.createElement('iframe');
         iframe.src = location.href + "#inframe";
@@ -55,7 +63,7 @@
         script.src = "https://unpkg.com/vconsole@latest/dist/vconsole.min.js";
         document.body.appendChild(script);
         script.onload = function () {
-            var vConsole = new window.VConsole();
+            new window.VConsole();
             diff.forEach(function (elem) {
                 console.log("[>>>>>>>>>" + elem + "<<<<<<<<<]");
                 console.log(window[elem]);
