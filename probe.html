@@ -24,12 +24,16 @@
         }
         document.querySelector("#user_agent").append(navigator.userAgent);
         document.querySelector("#url_path").append(location.pathname);
-        var ul_search = document.createElement('ul');
-        location.search.substring(1).split("&").forEach(function (elem) {
-            var li = document.createElement('li');
-            li.innerHTML = elem
-            ul_search.appendChild(li)
-        })
+        let ul_search = document.createElement('ul');
+        let search = location.search.substring(1);
+        if (search !== "") {
+            search.split("&").forEach(function (elem) {
+                let li = document.createElement('li');
+                li.textContent = elem
+                ul_search.appendChild(li)
+            })
+        }
+
         document.querySelector("#url_search").append(ul_search);
         document.querySelector("#url_hash").append(location.hash);
         document.querySelector("#cookies").append(document.cookie);
@@ -40,32 +44,32 @@
             if (window[0] !== event.source) {
                 return
             }
-            var iframeKeys = event.data;
-            var ul_diff = document.createElement('ul');
-            var ul_unknown = document.createElement('ul');
+            let iframeKeys = event.data;
+            let ul_diff = document.createElement('ul');
+            let ul_unknown = document.createElement('ul');
             for (let key in window) {
                 if (iframeKeys.indexOf(key) < 0 && key != 0) {
                     diff.push(key);
-                    var li = document.createElement('li');
-                    li.innerHTML = key
+                    let li = document.createElement('li');
+                    li.textContent = key
                     ul_diff.appendChild(li)
                 }
                 if (known.indexOf(key) < 0 && iframeKeys.indexOf(key) >= 0) {
                     unknown.push(key);
-                    var li = document.createElement('li');
-                    li.innerHTML = key
+                    let li = document.createElement('li');
+                    li.textContent = key
                     ul_unknown.appendChild(li)
                 }
             }
             document.querySelector("#methods_diff").appendChild(ul_diff);
             document.querySelector("#methods_unknown").appendChild(ul_unknown);
         }, false);
-        var iframe = document.createElement('iframe');
+        let iframe = document.createElement('iframe');
         iframe.src = location.href + "#inframe";
         iframe.style = "display: none;"
         document.body.appendChild(iframe);
         document.querySelector("iframe").contentWindow.postMessage("message", "*");
-        var script = document.createElement('script');
+        let script = document.createElement('script');
         script.src = "https://unpkg.com/vconsole@latest/dist/vconsole.min.js";
         document.body.appendChild(script);
         script.onload = function () {
